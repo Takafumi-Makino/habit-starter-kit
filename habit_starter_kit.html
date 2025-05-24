@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>習慣化スターターキット - 完全版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        
+        .toolkit-nav {
+            display: flex;
+            background: #f8f9fa;
+            overflow-x: auto;
+        }
+        
+        .nav-item {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            min-width: 200px;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+        
+        .nav-item h3 {
+            margin-bottom: 5px;
+        }
+        
+        .nav-item p {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .content-section {
+            display: none;
+            padding: 40px;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1em;
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        /* カレンダーセクション */
+        .habit-setup {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .habit-input {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .habit-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            min-width: 200px;
+        }
+        
+        .add-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        .add-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .habits-list {
+            margin-bottom: 20px;
+        }
+        
+        .habit-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .delete-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .mini-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .day-header {
+            background: #667eea;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        
+        .day-cell {
+            aspect-ratio: 1;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            padding: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+        
+        .day-cell:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+        
+        .day-number {
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .habit-dots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1px;
+        }
+        
+        .habit-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .habit-dot.completed {
+            background: #2ecc71;
+            border-color: #27ae60;
+        }
+        
+        /* 設定シートセクション */
+        .goal-setting-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .slider-group {
+            margin: 20px 0;
+        }
+        
+        .slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .slider-value {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        /* 診断チェックリスト */
+        .checklist {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+        }
+        
+        .checklist-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+        }
+        
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+        }
+        
+        .score-display {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .score-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .score-description {
+            font-size: 1.2em;
+        }
+        
+        /* PDF風セクション */
+        .pdf-content {
+            background: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .pdf-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .tip-box {
+            background: #e8f4f8;
+            border-left: 4px solid #2ecc71;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .tip-box h4 {
+            color: #2ecc71;
+            margin-bottom: 8px;
+        }
+        
+        .download-all-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 30px auto;
+            display: block;
+            transition: transform 0.3s;
+        }
+        
+        .download-all-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .feature-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .toolkit-nav {
+                flex-direction: column;
+            }
+            
+            .nav-item {
+                min-width: auto;
+            }
+            
+            .mini-calendar {
+                gap: 2px;
+            }
+            
+            .habit-dot {
+                width: 6px;
+                height: 6px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 習慣化スターターキット 🌟</h1>
+            <p class="subtitle">3日坊主を卒業するための完全ツールセット</p>
+            <div class="badge">読者限定プレゼント</div>
+        </div>
+        
+        <div class="toolkit-nav">
+            <div class="nav-item active" onclick="showSection('calendar')">
+                <h3>📅 カレンダー</h3>
+                <p>習慣化カレンダー</p>
+            </div>
+            <div class="nav-item" onclick="showSection('setting')">
+                <h3>📝 設定シート</h3>
+                <p>低いハードル設定</p>
+            </div>
+            <div class="nav-item" onclick="showSection('diagnosis')">
+                <h3>🎯 診断テスト</h3>
+                <p>継続力チェック</p>
+            </div>
+            <div class="nav-item" onclick="showSection('tips')">
+                <h3>💡 秘訣PDF</h3>
+                <p>モチベーション維持</p>
+            </div>
+        </div>
+        
+        <!-- 習慣化カレンダー -->
+        <div id="calendar" class="content-section active">
+            <h2 class="section-title">📅 習慣化カレンダーテンプレート</h2>
+            <p class="section-subtitle">毎日の小さな成功を視覚化して、継続力を育てよう</p>
+            
+            <div class="habit-setup">
+                <h3>🎯 習慣を追加</h3>
+                <div class="habit-input">
+                    <input type="text" id="habitInput" placeholder="例：腹筋1回、英単語1個、読書1ページ...">
+                    <button class="add-btn" onclick="addHabit()">追加</button>
+                </div>
+                <div class="habits-list" id="habitsList"></div>
+            </div>
+            
+            <div class="mini-calendar" id="miniCalendar"></div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>視覚的達成感</h3>
+                    <p>クリックで習慣完了をマーク。色付きドットで進捗が一目瞭然</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>自動統計機能</h3>
+                    <p>達成率や連続記録を自動計算。頑張りが数字で見える</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>スマホ対応</h3>
+                    <p>いつでもどこでも記録可能。通勤中でも簡単チェック</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 低いハードル設定シート -->
+        <div id="setting" class="content-section">
+            <h2 class="section-title">📝 「低いハードル」設定シート</h2>
+            <p class="section-subtitle">あなただけの完璧な習慣設計をサポート</p>
+            
+            <div class="goal-setting-form">
+                <div class="form-group">
+                    <label>🎯 達成したい大きな目標</label>
+                    <input type="text" id="bigGoal" placeholder="例：健康的な体を手に入れる、英語を話せるようになる">
+                </div>
+                
+                <div class="form-group">
+                    <label>💪 現在の習慣レベル</label>
+                    <select id="currentLevel">
+                        <option value="beginner">初心者（全く何もしていない）</option>
+                        <option value="sometimes">たまにやる（週1-2回程度）</option>
+                        <option value="irregular">不規則（やったりやらなかったり）</option>
+                        <option value="trying">頑張ってる（でも続かない）</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>⏰ 1日で使える時間</label>
+                    <div class="slider-group">
+                        <input type="range" class="slider" id="timeSlider" min="1" max="60" value="5" oninput="updateTimeValue()">
+                        <div class="slider-value" id="timeValue">5分</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>🏠 実行する場所</label>
+                    <input type="text" id="location" placeholder="例：自宅のリビング、通勤電車の中、オフィス">
+                </div>
+                
+                <div class="form-group">
+                    <label>📝 あなたの「めっちゃ低いハードル」</label>
+                    <textarea id="lowHurdle" placeholder="例：腹筋1回、英単語1個覚える、本を1ページ読む"></textarea>
+                </div>
+                
+                <button class="add-btn" onclick="generatePersonalPlan()">あなた専用プランを作成</button>
+                
+                <div id="personalPlan" style="display:none; margin-top: 20px;">
+                    <div class="pdf-content">
+                        <div class="pdf-title">🎊 あなた専用の習慣化プラン</div>
+                        <div id="planContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 継続力診断チェックリスト -->
+        <div id="diagnosis" class="content-section">
+            <h2 class="section-title">🎯 継続力診断チェックリスト</h2>
+            <p class="section-subtitle">あなたの継続タイプを診断して、最適なアプローチを見つけよう</p>
+            
+            <div class="checklist">
+                <div class="checklist-item">
+                    <input type="checkbox" id="q1" onchange="updateScore()">
+                    <label for="q1">新しいことを始める時、まず小さな目標から設定する</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="q2" onchange="updateScore()">
+                    <label for="q2">完璧でなくても、60%できれば自分を褒める</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="q3" onchange="updateScore()">
+                    <label for="q3">習慣を記録する仕組みを持っている</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="q4" onchange="updateScore()">
+                    <label for="q4">1日サボっても、翌日にはまた始められる</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="q5" onchange="updateScore()">
+                    <label for="q5">習慣と既存の行動をセットにしている</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="q6" onchange="updateScore()">
+                    <label for="q6">環境を味方につけて習慣化している</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="q7" onchange="updateScore()">
+                    <label for="q7">他人と比較せず、自分のペースを大切にする</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="q8" onchange="updateScore()">
+                    <label for="q8">習慣の「なぜ」（理由）を明確にしている</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="q9" onchange="updateScore()">
+                    <label for="q9">小さな変化や成長を見逃さずに認識する</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="q10" onchange="updateScore()">
+                    <label for="q10">習慣を楽しむ工夫やご褒美を設定している</label>
+                </div>
+                
+                <div class="score-display" id="scoreDisplay">
+                    <div class="score-number" id="scoreNumber">0</div>
+                    <div class="score-description" id="scoreDescription">診断を始めましょう</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- モチベーション維持の秘訣PDF -->
+        <div id="tips" class="content-section">
+            <h2 class="section-title">💡 モチベーション維持の秘訣</h2>
+            <p class="section-subtitle">科学的根拠に基づいた継続のコツを完全公開</p>
+            
+            <div class="pdf-content">
+                <div class="pdf-title">🧠 脳科学が教える継続の法則</div>
+                
+                <h4>1. 21日ルールの真実</h4>
+                <p>「21日で習慣になる」は間違い！実際は平均66日かかることが研究で判明。焦らず長期戦で臨もう。</p>
+                
+                <div class="tip-box">
+                    <h4>💡 実践のコツ</h4>
+                    <p>最初の3週間は「慣れ期間」と割り切り、完璧を求めない。66日後の自分を楽しみに待とう。</p>
+                </div>
+            </div>
+            
+            <div class="pdf-content">
+                <div class="pdf-title">⚡ エネルギー管理術</div>
+                
+                <h4>2. ウィルパワーの節約法</h4>
+                <p>意志力は消耗品。決断疲れを避けるため、習慣は「自動化」することが重要。</p>
+                
+                <div class="tip-box">
+                    <h4>💡 実践のコツ</h4>
+                    <p>「朝起きたら immediately 腹筋」のように、既存の行動とセットにして考える回数を減らす。</p>
+                </div>
+            </div>
+            
+            <div class="pdf-content">
+                <div class="pdf-title">🔄 習慣スタッキング</div>
+                
+                <h4>3. 既存習慣の活用法</h4>
+                <p>新しい習慣を既存の確立された習慣にくっつける「ハビットスタッキング」が効果的。</p>
+                
+                <div class="tip-box">
+                    <h4>💡 実践のコツ</h4>
+                    <p>「コーヒーを飲んだ後に」「歯を磨く前に」など、必ずやることとセットにする。</p>
+                </div>
+            </div>
+            
+            <div class="pdf-content">
+                <div class="pdf-title">🏆 報酬システム設計</div>
+                
+                <h4>4. ドーパミンを味方につける</h4>
+                <p>即座の報酬と遅延報酬のバランスが継続の鍵。小さなご褒美を戦略的に配置しよう。</p>
+                
+                <div class="tip-box">
+                    <h4>💡 実践のコツ</h4>
+                    <p>行動直後：好きな音楽、週間：好きなスイーツ、月間：欲しかったアイテム購入</p>
+                </div>
+            </div>
+            
+            <div class="pdf-content">
+                <div class="pdf-title">📱 環境デザイン</div>
+                
+                <h4>5. 環境を味方につける</h4>
+                <p>意志力に頼らず、環境を整えることで自然と良い行動が生まれる仕組みを作る。</p>
+                
+                <div class="tip-box">
+                    <h4>💡 実践のコツ</h4>
+                    <p>筋トレウェアを枕元に置く、本を目立つ場所に置く、スマホを別室に置くなど。</p>
+                </div>
+            </div>
+        </div>
+        
+        <button class="download-all-btn" onclick="downloadAllTools()">
+            📥 すべてのツールをダウンロード
+        </button>
+    </div>
+
+    <script>
+        let habits = [];
+        let habitData = {};
+        
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.closest('.nav-item').classList.add('active');
+        }
+        
+        function addHabit() {
+            const input = document.getElementById('habitInput');
+            const habitName = input.value.trim();
+            
+            if (habitName && !habits.includes(habitName)) {
+                habits.push(habitName);
+                input.value = '';
+                updateHabitsList();
+                generateMiniCalendar();
+            }
+        }
+        
+        function removeHabit(habitName) {
+            habits = habits.filter(h => h !== habitName);
+            updateHabitsList();
+            generateMiniCalendar();
+        }
+        
+        function updateHabitsList() {
+            const container = document.getElementById('habitsList');
+            container.innerHTML = '';
+            
+            habits.forEach(habit => {
+                const item = document.createElement('div');
+                item.className = 'habit-item';
+                item.innerHTML = `
+                    <span>${habit}</span>
+                    <button class="delete-btn" onclick="removeHabit('${habit}')">削除</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+        
+        function generateMiniCalendar() {
+            const calendar = document.getElementById('miniCalendar');
+            calendar.innerHTML = '';
+            
+            const dayHeaders = ['日', '月', '火', '水', '木', '金', '土'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.textContent = day;
+                calendar.appendChild(header);
+            });
+            
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            for (let i = 0; i < firstDay; i++) {
+                calendar.appendChild(document.createElement('div'));
+            }
+            
+            for (let day = 1; day <= Math.min(daysInMonth, 14); day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell';
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayCell.appendChild(dayNumber);
+                
+                const habitDots = document.createElement('div');
+                habitDots.className = 'habit-dots';
+                
+                const dateKey = `${year}-${month + 1}-${day}`;
+                
+                habits.forEach(habit => {
+                    const dot = document.createElement('div');
+                    dot.className = 'habit-dot';
+                    dot.title = habit;
+                    
+                    if (habitData[dateKey] && habitData[dateKey][habit]) {
+                        dot.classList.add('completed');
+                    }
+                    
+                    dot.onclick = () => toggleHabit(dateKey, habit, dot);
+                    habitDots.appendChild(dot);
+                });
+                
+                dayCell.appendChild(habitDots);
+                calendar.appendChild(dayCell);
+            }
+        }
+        
+        function toggleHabit(dateKey, habit, dotElement) {
+            if (!habitData[dateKey]) {
+                habitData[dateKey] = {};
+            }
+            
+            habitData[dateKey][habit] = !habitData[dateKey][habit];
+            
+            if (habitData[dateKey][habit]) {
+                dotElement.classList.add('completed');
+            } else {
+                dotElement.classList.remove('completed');
+            }
+        }
+        
+        function updateTimeValue() {
+            const slider = document.getElementById('timeSlider');
+            const valueDisplay = document.getElementById('timeValue');
+            valueDisplay.textContent = slider.value + '分';
+        }
+        
+        function generatePersonalPlan() {
+            const bigGoal = document.getElementById('bigGoal').value;
+            const currentLevel = document.getElementById('currentLevel').value;
+            const timeValue = document.getElementById('timeSlider').value;
+            const location = document.getElementById('location').value;
+            const lowHurdle = document.getElementById('lowHurdle').value;
+            
+            if (!bigGoal || !lowHurdle) {
+                alert('大きな目標と低いハードルを入力してください');
+                return;
+            }
+            
+            const levelTexts = {
+                'beginner': '初心者',
+                'sometimes': 'たまにやる人',
+                'irregular': '不規則な人',
+                'trying': '頑張ってる人'
+            };
+            
+            const planContent = `
+                <h3>🎯 ${bigGoal}</h3>
+                <p><strong>現在のレベル:</strong> ${levelTexts[currentLevel]}</p>
+                <p><strong>使える時間:</strong> 1日${timeValue}分</p>
+                <p><strong>実行場所:</strong> ${location}</p>
+                
+                <div class="tip-box">
+                    <h4>🚀 あなたの「めっちゃ低いハードル」</h4>
+                    <p>${lowHurdle}</p>
+                </div>
+                
+                <h4>📅 推奨スケジュール</h4>
+                <ul>
+                    <li><strong>Week 1-2:</strong> ${lowHurdle}を毎日実行（慣れる期間）</li>
+                    <li><strong>Week 3-4:</strong> 少しだけレベルアップ（${timeValue < 10 ? '時間を倍に' : '内容を1.5倍に'}）</li>
+                    <li><strong>Month 2-3:</strong> 自然に量が増えていく時期</li>
+                </ul>
+                
+                <div class="tip-box">
+                    <h4>⚡ 成功のための3つのルール</h4>
+                    <p>1. 完璧を求めない（60%でOK）<br>
+                    2. 1日サボっても自分を責めない<br>
+                    3. 小さな変化を見逃さず褒める</p>
+                </div>
+            `;
+            
+            document.getElementById('planContent').innerHTML = planContent;
+            document.getElementById('personalPlan').style.display = 'block';
+        }
+        
+        function updateScore() {
+            const checkboxes = document.querySelectorAll('#diagnosis input[type="checkbox"]');
+            let score = 0;
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) score++;
+            });
+            
+            document.getElementById('scoreNumber').textContent = score;
+            
+            let description = '';
+            let color = '';
+            
+            if (score <= 3) {
+                description = '継続力：初心者レベル<br>まずは基本から始めましょう！';
+                color = '#e74c3c';
+            } else if (score <= 6) {
+                description = '継続力：成長期レベル<br>良いスタートです！さらに伸ばしましょう';
+                color = '#f39c12';
+            } else if (score <= 8) {
+                description = '継続力：上級者レベル<br>素晴らしい！継続力が身についています';
+                color = '#3498db';
+            } else {
+                description = '継続力：マスターレベル<br>完璧！継続の達人ですね！';
+                color = '#2ecc71';
+            }
+            
+            document.getElementById('scoreDescription').innerHTML = description;
+            document.getElementById('scoreDisplay').style.background = `linear-gradient(45deg, ${color}, ${color}dd)`;
+        }
+        
+        function downloadAllTools() {
+            const data = {
+                habits: habits,
+                habitData: habitData,
+                settings: {
+                    bigGoal: document.getElementById('bigGoal').value,
+                    currentLevel: document.getElementById('currentLevel').value,
+                    timeValue: document.getElementById('timeSlider').value,
+                    location: document.getElementById('location').value,
+                    lowHurdle: document.getElementById('lowHurdle').value
+                },
+                diagnosis: {
+                    score: document.getElementById('scoreNumber').textContent,
+                    description: document.getElementById('scoreDescription').textContent
+                },
+                exportDate: new Date().toISOString(),
+                message: "習慣化スターターキット - noteプレゼント版"
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `習慣化スターターキット_${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert('🎉 スターターキットをダウンロードしました！\n\n継続のコツ：\n・完璧を求めない\n・小さく始める\n・自分を褒める\n\n一緒に頑張りましょう！');
+        }
+        
+        // 初期化
+        document.getElementById('habitInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addHabit();
+            }
+        });
+        
+        generateMiniCalendar();
+        updateScore();
+    </script>
+</body>
+</html>
